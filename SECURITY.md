@@ -16,7 +16,7 @@ We support the latest minor release with security patches.
 Instead, report vulnerabilities privately:
 
 1. Open a private security advisory on GitHub:
-   `https://github.com/bucky-ops/intelligent-profiling-engine/security/advisories/new`
+   `https://github.com/collins-muchiri/intelligent-profiling-engine/security/advisories/new`
 2. Or email the maintainers directly with "SECURITY" in the subject.
 
 Please include:
