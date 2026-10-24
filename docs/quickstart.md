@@ -3,7 +3,7 @@
 ## 1. Install
 
 ```bash
-git clone https://github.com/bucky-ops/intelligent-profiling-engine.git
+git clone https://github.com/collins-muchiri/intelligent-profiling-engine.git
 cd intelligent-profiling-engine
 
 python -m venv .venv
