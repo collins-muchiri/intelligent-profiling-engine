@@ -1,6 +1,6 @@
 # Intelligent Profiling Engine — Comprehensive Audit Report
 
-**Repository:** `bucky-ops/intelligent-profiling-engine`
+**Repository:** `collins-muchiri/intelligent-profiling-engine`
 **Audit performed:** technical review of HEAD of `main` (commit `4a691d2`)
 **Scope:** Code Quality, Documentation, Testing, Dependencies, Performance, Deployment
 
