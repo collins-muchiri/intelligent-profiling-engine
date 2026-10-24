@@ -6,7 +6,7 @@ up a development environment and the conventions we follow.
 ## 1. Development setup
 
 ```bash
-git clone https://github.com/bucky-ops/intelligent-profiling-engine.git
+git clone https://github.com/collins-muchiri/intelligent-profiling-engine.git
 cd intelligent-profiling-engine
 
 python -m venv .venv
@@ -48,7 +48,7 @@ tests/                Pytest test suite (unit + integration)
 
 ## 5. Reporting bugs / security issues
 
-- Bugs: open a [GitHub Issue](https://github.com/bucky-ops/intelligent-profiling-engine/issues)
+- Bugs: open a [GitHub Issue](https://github.com/collins-muchiri/intelligent-profiling-engine/issues)
   with a minimal reproducible example.
 - Security: **do not** open a public issue. See [SECURITY.md](SECURITY.md).
 
