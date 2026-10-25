@@ -11,10 +11,10 @@ Public API:
         HITLFeedback,
     )
 """
+from .hitl import HITLFeedback
+from .nlp import NLPProcessor
 from .profile import EntityTracker, Profile
 from .unsupervised import AnomalyDetection, Clustering
-from .nlp import NLPProcessor
-from .hitl import HITLFeedback
 
 __all__ = [
     "EntityTracker",

@@ -13,13 +13,13 @@ import csv
 import json
 import os
 import shlex
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
-from profile_system.profile import EntityTracker
-from profile_system.unsupervised import Clustering, AnomalyDetection
-from profile_system.nlp import NLPProcessor
 from profile_system.hitl import HITLFeedback
-from profile_system.logging_viz import log_event, Visualizer
+from profile_system.logging_viz import Visualizer, log_event
+from profile_system.nlp import NLPProcessor
+from profile_system.profile import EntityTracker
+from profile_system.unsupervised import AnomalyDetection, Clustering
 
 
 class Profiler:
@@ -44,16 +44,16 @@ class Profiler:
         self.visualizer = Visualizer()
 
     # ------------------------------------------------------------------ profile
-    def update_profile(self, entity_id: str, data: Dict[str, Any]) -> None:
+    def update_profile(self, entity_id: str, data: dict[str, Any]) -> None:
         self.tracker.update_profile(entity_id, data)
         log_event("profile_update", {"entity_id": entity_id})
 
-    def show_profile(self, entity_id: str) -> Dict[str, Any]:
+    def show_profile(self, entity_id: str) -> dict[str, Any]:
         profile = self.tracker.get_or_create_profile(entity_id)
         return profile.to_dict()
 
     # ------------------------------------------------------------------ cluster
-    def cluster(self, n_clusters: Optional[int] = None) -> Tuple[Any, Any]:
+    def cluster(self, n_clusters: int | None = None) -> tuple[Any, Any]:
         """Run K-Means clustering on the numeric features of all profiles.
 
         Returns ``(labels, summary_df)`` or raises ``ValueError`` if there is
@@ -75,7 +75,7 @@ class Profiler:
         return labels, df[["entity_id", "cluster"]]
 
     # ----------------------------------------------------------- anomaly detect
-    def detect_anomalies(self) -> Tuple[Any, Any]:
+    def detect_anomalies(self) -> tuple[Any, Any]:
         """Run Isolation Forest anomaly detection.
 
         Returns ``(scores, anomalies_df)``.
@@ -114,7 +114,7 @@ class Profiler:
         log_event("hitl_validation", {"entity_id": entity_id, "notes": notes})
 
     # --------------------------------------------------------------- stats ---
-    def stats(self) -> Dict[str, Any]:
+    def stats(self) -> dict[str, Any]:
         """Return a summary dict of the current engine state."""
         profiles = self.tracker.profiles
         total_signals = sum(len(p.behavioral_signals) for p in profiles.values())
@@ -136,7 +136,7 @@ class Profiler:
         }
 
     # --------------------------------------------------------------- list ----
-    def list_profiles(self) -> List[Dict[str, Any]]:
+    def list_profiles(self) -> list[dict[str, Any]]:
         """Return a lightweight summary list of all profiles."""
         result = []
         for p in self.tracker.profiles.values():
@@ -168,8 +168,8 @@ class Profiler:
                     entity_id = row.get("entity_id") or row.get("id")
                     if not entity_id:
                         continue
-                    data: Dict[str, Any] = {}
-                    behavioral: Dict[str, Any] = {}
+                    data: dict[str, Any] = {}
+                    behavioral: dict[str, Any] = {}
                     for k, v in row.items():
                         if k in ("entity_id", "id"):
                             continue
@@ -257,7 +257,7 @@ class Profiler:
         return count
 
     # --------------------------------------------------------------- nlp ----
-    def analyze_text(self, entity_id: str, text: str) -> Dict[str, Any]:
+    def analyze_text(self, entity_id: str, text: str) -> dict[str, Any]:
         """Run full NLP analysis on ``text`` and attach to ``entity_id``."""
         sentiment = self.nlp.sentiment_analysis(text)
         try:
@@ -274,7 +274,7 @@ class Profiler:
         return insight
 
 
-def _parse_kv(token: str) -> Tuple[str, str]:
+def _parse_kv(token: str) -> tuple[str, str]:
     """Parse a ``key:value`` token, raising ``ValueError`` on bad input."""
     if ":" not in token:
         raise ValueError(
@@ -288,7 +288,7 @@ def _parse_kv(token: str) -> Tuple[str, str]:
 class ProfileSystemCLI:
     """Interactive REPL driving :class:`Profiler`."""
 
-    def __init__(self, profiler: Optional[Profiler] = None):
+    def __init__(self, profiler: Profiler | None = None):
         self.profiler = profiler or Profiler()
         self.sidebar_visible = False
         self.current_mode = "analysis"
@@ -320,8 +320,16 @@ class ProfileSystemCLI:
 
     def run(self):
         print("Profile System CLI - Type 'help' for commands, 'exit' to quit.")
-        self._history: List[str] = []
-        import readline  # noqa: F401,E402  optional arrow-key history on POSIX
+        self._history: list[str] = []
+        try:
+            import readline
+
+            # Explicit use (not a bare side-effect import): history + completion.
+            readline.parse_and_bind("tab: complete")
+        except ImportError:
+            # Stock Windows CPython has no readline module; the CLI remains
+            # fully functional without arrow-key history (documented degrade).
+            pass
         while True:
             try:
                 command = input(f"{self.current_mode}> ").strip()
@@ -398,7 +406,7 @@ Examples:
         """)
 
     # --------------------------------------------------------------- profile
-    def handle_profile(self, args: List[str]):
+    def handle_profile(self, args: list[str]):
         parser = argparse.ArgumentParser(prog="profile", add_help=False)
         parser.add_argument("entity_id")
         parser.add_argument(
@@ -419,7 +427,7 @@ Examples:
             print(f"Profile for {ns.entity_id}: {json.dumps(profile_dict, indent=2, default=str)}")
             return
 
-        data: Dict[str, Any] = {}
+        data: dict[str, Any] = {}
         for token in ns.behavior:
             try:
                 key, raw_value = _parse_kv(token)
@@ -445,7 +453,7 @@ Examples:
         print(f"✔ Profile updated for {ns.entity_id}")
 
     # --------------------------------------------------------------- cluster
-    def handle_cluster(self, args: List[str]):
+    def handle_cluster(self, args: list[str]):
         parser = argparse.ArgumentParser(prog="cluster", add_help=False)
         parser.add_argument("--n", type=int, default=None)
         try:
@@ -464,7 +472,7 @@ Examples:
             print(f"✖ Clustering failed: {e}")
 
     # --------------------------------------------------------------- analyze
-    def handle_analyze(self, args: List[str]):
+    def handle_analyze(self, args: list[str]):
         if not args or args[0] != "anomalies":
             print("⚠ Usage: analyze anomalies")
             return
@@ -481,7 +489,7 @@ Examples:
             print(f"✖ Anomaly detection failed: {e}")
 
     # ------------------------------------------------------------- visualize
-    def handle_visualize(self, args: List[str]):
+    def handle_visualize(self, args: list[str]):
         # Fixed: properly parse optional --map flag and entity id in any order
         parser = argparse.ArgumentParser(prog="visualize", add_help=False)
         parser.add_argument("entity_id")
@@ -502,7 +510,7 @@ Examples:
                       + ("..." if len(ids) > 5 else ""))
 
     # ------------------------------------------------------------------ mode
-    def handle_mode(self, args: List[str]):
+    def handle_mode(self, args: list[str]):
         if args:
             self.current_mode = args[0]
             print(f"✔ Mode switched to {self.current_mode}")
@@ -518,7 +526,7 @@ Examples:
             print("Sidebar hidden")
 
     # ------------------------------------------------------------------ hitl
-    def handle_hitl(self, args: List[str]):
+    def handle_hitl(self, args: list[str]):
         parser = argparse.ArgumentParser(prog="hitl", add_help=False)
         sub = parser.add_subparsers(dest="action")
         v = sub.add_parser("validate", add_help=False)
@@ -566,7 +574,7 @@ Examples:
         print(f"Total: {len(rows)} profiles")
 
     # --------------------------------------------------------------- import
-    def handle_import(self, args: List[str]):
+    def handle_import(self, args: list[str]):
         if not args:
             print("⚠ Usage: import <file.csv|file.json>")
             return
@@ -578,7 +586,7 @@ Examples:
             print(f"✖ {e}")
 
     # --------------------------------------------------------------- export
-    def handle_export(self, args: List[str]):
+    def handle_export(self, args: list[str]):
         if not args:
             print("⚠ Usage: export <file.csv|file.json>")
             return
@@ -595,7 +603,7 @@ Examples:
         print(f"✔ Reset complete. Removed {count} profiles.")
 
     # ------------------------------------------------------------------ nlp
-    def handle_nlp(self, args: List[str]):
+    def handle_nlp(self, args: list[str]):
         parser = argparse.ArgumentParser(prog="nlp", add_help=False)
         parser.add_argument("entity_id")
         parser.add_argument("text")

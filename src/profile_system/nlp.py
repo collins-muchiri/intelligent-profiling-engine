@@ -12,7 +12,6 @@ Improvements over the original:
 from __future__ import annotations
 
 import threading
-from typing import Dict, List, Tuple
 
 
 class NLPProcessor:
@@ -26,7 +25,7 @@ class NLPProcessor:
         self._nlp = None
         self._embedder = None
         self._lock = threading.Lock()
-        self._embedding_cache: Dict[int, List[float]] = {}
+        self._embedding_cache: dict[int, list[float]] = {}
 
     # ---------------------------------------------------------- spacy -------
     @property
@@ -67,11 +66,11 @@ class NLPProcessor:
         return self._embedder
 
     # ---------------------------------------------------------- API ----------
-    def get_embeddings(self, texts: List[str]) -> List[List[float]]:
+    def get_embeddings(self, texts: list[str]) -> list[list[float]]:
         if not texts:
             return []
-        results: List[List[float]] = []
-        missing: List[Tuple[int, str]] = []
+        results: list[list[float]] = []
+        missing: list[tuple[int, str]] = []
         for i, t in enumerate(texts):
             key = hash(t)
             cached = self._embedding_cache.get(key)
@@ -82,16 +81,16 @@ class NLPProcessor:
                 missing.append((i, t))
         if missing:
             new_vecs = self.embedder.encode([t for _, t in missing]).tolist()
-            for (i, t), vec in zip(missing, new_vecs):
+            for (i, t), vec in zip(missing, new_vecs, strict=False):
                 self._embedding_cache[hash(t)] = vec
                 results[i] = vec
         return results
 
-    def extract_entities(self, text: str) -> List[Tuple[str, str]]:
+    def extract_entities(self, text: str) -> list[tuple[str, str]]:
         doc = self.nlp(text)
         return [(ent.text, ent.label_) for ent in doc.ents]
 
-    def sentiment_analysis(self, text: str) -> Dict[str, float]:
+    def sentiment_analysis(self, text: str) -> dict[str, float]:
         from textblob import TextBlob  # lazy import
         blob = TextBlob(text)
         return {
@@ -99,7 +98,7 @@ class NLPProcessor:
             "subjectivity": blob.sentiment.subjectivity,
         }
 
-    def topic_modeling(self, texts: List[str], n_topics: int = 5) -> Dict[str, str]:
+    def topic_modeling(self, texts: list[str], n_topics: int = 5) -> dict[str, str]:
         if not texts:
             return {}
         from sklearn.decomposition import NMF
@@ -111,7 +110,7 @@ class NLPProcessor:
             nmf = NMF(n_components=min(n_topics, len(texts)), random_state=42)
             nmf.fit(tfidf)
             feature_names = vectorizer.get_feature_names_out()
-            topics: Dict[str, str] = {}
+            topics: dict[str, str] = {}
             for topic_idx, topic in enumerate(nmf.components_):
                 top_words = [feature_names[i] for i in topic.argsort()[:-6:-1]]
                 topics[f"Topic {topic_idx + 1}"] = ", ".join(top_words)

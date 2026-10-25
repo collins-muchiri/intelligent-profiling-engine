@@ -12,12 +12,12 @@ from __future__ import annotations
 
 import json
 import logging
-from typing import Any, Dict, Optional
+from typing import Any
 
 import matplotlib.pyplot as plt
 import pandas as pd
 
-_LOGGER: Optional[logging.Logger] = None
+_LOGGER: logging.Logger | None = None
 
 
 def get_logger() -> logging.Logger:
@@ -36,7 +36,7 @@ def get_logger() -> logging.Logger:
     return _LOGGER
 
 
-def log_event(event: str, details: Dict[str, Any], level: int = logging.INFO) -> None:
+def log_event(event: str, details: dict[str, Any], level: int = logging.INFO) -> None:
     """Structured log helper that JSON-encodes the ``details`` payload."""
     get_logger().log(level, "%s | %s", event, json.dumps(details, default=str))
 
@@ -46,7 +46,7 @@ class Visualizer:
         self,
         profile_df: pd.DataFrame,
         entity_id: str,
-        profile: Optional[Any] = None,
+        profile: Any | None = None,
     ):
         """Plot the behavioural timeline for ``entity_id``.
 

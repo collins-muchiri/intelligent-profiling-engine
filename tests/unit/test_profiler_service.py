@@ -1,6 +1,8 @@
 """Tests for the Profiler service methods backing the new CLI commands."""
 from __future__ import annotations
 
+import pytest
+
 from profile_system.cli import Profiler
 
 
@@ -88,20 +90,14 @@ def test_import_unsupported_format(tmp_path):
     p = Profiler(storage_file=str(tmp_path / "p.json"))
     path = tmp_path / "data.txt"
     path.write_text("hello")
-    try:
+    with pytest.raises(ValueError, match="Unsupported import format"):
         p.import_profiles(str(path))
-        assert False, "Should have raised ValueError"
-    except ValueError as e:
-        assert "Unsupported import format" in str(e)
 
 
 def test_import_nonexistent_file(tmp_path):
     p = Profiler(storage_file=str(tmp_path / "p.json"))
-    try:
+    with pytest.raises(FileNotFoundError):
         p.import_profiles("/nonexistent/file.csv")
-        assert False, "Should have raised FileNotFoundError"
-    except FileNotFoundError:
-        pass
 
 
 def test_analyze_text_attaches_insight(tmp_path):

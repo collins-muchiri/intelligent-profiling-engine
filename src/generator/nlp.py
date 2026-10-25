@@ -1,5 +1,4 @@
 """NLP helpers for synthetic text generation and embeddings placeholders."""
-from typing import List
 
 
 def generate_synthetic_text(domain: str, seed: int = 0) -> str:
@@ -30,6 +29,6 @@ def generate_synthetic_text(domain: str, seed: int = 0) -> str:
     idx = seed % len(items)
     return items[idx]
 
-def generate_embeddings_for_texts(texts: List[str]):
+def generate_embeddings_for_texts(texts: list[str]):
     # Placeholder: return same-length list of dummy vectors
     return [[0.0] * 128 for _ in texts]

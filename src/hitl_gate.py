@@ -4,9 +4,9 @@ A profile action cannot be created unless a recorded human approval exists. This
 README principle into a control that fails closed: if the approval record is missing, malformed or
 expired, the gate raises and nothing is emitted.
 """
+import json
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
-import json
 
 
 class GateError(RuntimeError):

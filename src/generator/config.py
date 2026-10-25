@@ -1,15 +1,16 @@
+from typing import Any
+
 import yaml
-from typing import Any, Dict
 
 
 class ConfigLoader:
     def __init__(self, path: str):
         self.path = path
-        self.config: Dict[str, Any] = {}
+        self.config: dict[str, Any] = {}
         self.load()
 
-    def load(self) -> Dict[str, Any]:
-        with open(self.path, 'r') as f:
+    def load(self) -> dict[str, Any]:
+        with open(self.path) as f:
             self.config = yaml.safe_load(f)
         return self.config
 

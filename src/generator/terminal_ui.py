@@ -1,24 +1,16 @@
 """Terminal-style UI shim that wires to the orchestrator and a simple in-memory profiler."""
-from typing import Dict
 
-from generator.config import ConfigLoader
-
-try:
-    from generator.orchestrator import SyntheticDataOrchestrator
-except Exception:
-    class SyntheticDataOrchestrator:  # minimal stub
-        def __init__(self, _config_path):
-            self.config = ConfigLoader(_config_path).config
-        def generate_batch(self, domain, region, size):
-            return []
-        def to_parquet(self, records, path):
-            return path
+# Direct import: the former try/except-with-stub-class fallback silently
+# replaced the real orchestrator with an empty stub whenever ANY import error
+# occurred (silent-failure class; also a mypy no-redef). Packaging is fixed,
+# so an import failure here is a real defect and must surface.
+from generator.orchestrator import SyntheticDataOrchestrator
 
 
 class InMemoryProfiler:
     def __init__(self):
-        self.profiles: Dict[str, Dict] = {}
-    def update(self, record: Dict):
+        self.profiles: dict[str, dict] = {}
+    def update(self, record: dict):
         entity = record.get('entity_id')
         if not entity:
             return

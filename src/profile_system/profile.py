@@ -10,12 +10,18 @@ catastrophic at scale. We now:
 """
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    import pandas  # annotation-only (as `pandas`, so the lazy in-function
+    # `import pandas as pd` is not a redefinition); runtime import stays lazy
+
 import atexit
 import json
 import os
 import threading
 from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 
 def _now_iso() -> str:
@@ -25,32 +31,32 @@ def _now_iso() -> str:
 class Profile:
     def __init__(self, entity_id: str):
         self.entity_id = entity_id
-        self.static_attributes: Dict[str, Any] = {}
-        self.behavioral_signals: List[Dict[str, Any]] = []
-        self.temporal_patterns: Dict[str, Any] = {}
-        self.text_insights: Dict[str, Any] = {}
+        self.static_attributes: dict[str, Any] = {}
+        self.behavioral_signals: list[dict[str, Any]] = []
+        self.temporal_patterns: dict[str, Any] = {}
+        self.text_insights: dict[str, Any] = {}
         self.created_at = datetime.now(timezone.utc)
         self.updated_at = datetime.now(timezone.utc)
 
-    def update_static(self, attributes: Dict[str, Any]):
+    def update_static(self, attributes: dict[str, Any]):
         self.static_attributes.update(attributes)
         self.updated_at = datetime.now(timezone.utc)
 
-    def add_behavioral_signal(self, signal: Dict[str, Any]):
+    def add_behavioral_signal(self, signal: dict[str, Any]):
         if "timestamp" not in signal:
             signal["timestamp"] = _now_iso()
         self.behavioral_signals.append(signal)
         self.updated_at = datetime.now(timezone.utc)
 
-    def update_temporal(self, patterns: Dict[str, Any]):
+    def update_temporal(self, patterns: dict[str, Any]):
         self.temporal_patterns.update(patterns)
         self.updated_at = datetime.now(timezone.utc)
 
-    def add_text_insight(self, insight: Dict[str, Any]):
+    def add_text_insight(self, insight: dict[str, Any]):
         self.text_insights.update(insight)
         self.updated_at = datetime.now(timezone.utc)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "entity_id": self.entity_id,
             "static_attributes": self.static_attributes,
@@ -62,7 +68,7 @@ class Profile:
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "Profile":
+    def from_dict(cls, data: dict[str, Any]) -> Profile:
         profile = cls(data["entity_id"])
         profile.static_attributes = data.get("static_attributes", {})
         profile.behavioral_signals = data.get("behavioral_signals", [])
@@ -107,11 +113,11 @@ class EntityTracker:
         auto_flush: bool = True,
     ):
         self.storage_file = storage_file
-        self.profiles: Dict[str, Profile] = {}
+        self.profiles: dict[str, Profile] = {}
         self._debounce_seconds = debounce_seconds
         self._flush_threshold = flush_threshold
         self._dirty = 0
-        self._timer: Optional[threading.Timer] = None
+        self._timer: threading.Timer | None = None
         self._lock = threading.RLock()
         self.load_profiles()
         if auto_flush:
@@ -122,7 +128,7 @@ class EntityTracker:
         if not os.path.exists(self.storage_file):
             return
         try:
-            with open(self.storage_file, "r") as f:
+            with open(self.storage_file) as f:
                 data = json.load(f)
                 for pid, pdata in data.items():
                     self.profiles[pid] = Profile.from_dict(pdata)
@@ -177,7 +183,7 @@ class EntityTracker:
                 self._mark_dirty()
             return self.profiles[entity_id]
 
-    def update_profile(self, entity_id: str, data: Dict[str, Any]):
+    def update_profile(self, entity_id: str, data: dict[str, Any]):
         profile = self.get_or_create_profile(entity_id)
         if "static" in data:
             profile.update_static(data["static"])
@@ -190,7 +196,7 @@ class EntityTracker:
         self._mark_dirty()
 
     # ------------------------------------------------- analytics -----------
-    def detect_changes(self, entity_id: str) -> Dict[str, Any]:
+    def detect_changes(self, entity_id: str) -> dict[str, Any]:
         """Detect recent activity changes for ``entity_id``.
 
         Returns a dict with ``recent_signals`` count and an ``anomalies``
@@ -215,17 +221,17 @@ class EntityTracker:
                 continue
         return {"recent_signals": recent_signals, "anomalies": recent_signals > 10}
 
-    def get_profiles_df(self) -> "pd.DataFrame":  # type: ignore[name-defined]
+    def get_profiles_df(self) -> pandas.DataFrame:
         """Flatten profiles into a DataFrame suitable for ML.
 
         ``pandas`` is imported lazily so that the core module remains
         importable in environments without pandas installed.
         """
-        import pandas as pd  # noqa: F811
+        import pandas as pd
 
         data_list = []
         for p in self.profiles.values():
-            row: Dict[str, Any] = {"entity_id": p.entity_id}
+            row: dict[str, Any] = {"entity_id": p.entity_id}
             amounts = [s.get("amount", 0) for s in p.behavioral_signals if "amount" in s]
             row["total_amount"] = sum(amounts)
             row["avg_amount"] = sum(amounts) / len(amounts) if amounts else 0

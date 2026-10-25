@@ -17,23 +17,20 @@ Improvements over the original:
 """
 from __future__ import annotations
 
+import contextlib
 import json
-import os
 import queue
 import sys
 import threading
 import tkinter as tk
 from datetime import datetime
 from tkinter import filedialog, font, messagebox, ttk
-from typing import Optional
 
 import matplotlib
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "src"))
-
-from profile_system.cli import ProfileSystemCLI  # noqa: E402
+from profile_system.cli import ProfileSystemCLI
 
 matplotlib.use("TkAgg")
 
@@ -94,7 +91,7 @@ class ProfileApp:
         self.setup_ui()
 
         self.is_alive = True
-        self._cmd_queue: "queue.Queue[Optional[str]]" = queue.Queue()
+        self._cmd_queue: queue.Queue[str | None] = queue.Queue()
         self.system = ProfileSystemCLI()
         self.original_stdout = sys.stdout
         sys.stdout = ConsoleRedirector(
@@ -730,14 +727,10 @@ class ProfileApp:
     def on_close(self):
         self.is_alive = False
         self._cmd_queue.put(None)
-        try:
+        with contextlib.suppress(RuntimeError):
             self._worker.join(timeout=2.0)
-        except RuntimeError:
-            pass
-        try:
+        with contextlib.suppress(Exception):
             self.system.profiler.tracker.save_profiles()
-        except Exception:
-            pass
         sys.stdout = self.original_stdout
         self.root.destroy()
 

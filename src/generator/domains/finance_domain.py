@@ -1,7 +1,7 @@
-import uuid
 import hashlib
+import uuid
 from datetime import datetime, timezone
-from typing import Dict, Any
+from typing import Any
 
 from ..nlp import generate_synthetic_text
 
@@ -13,7 +13,7 @@ class FinanceDomainGenerator:
     def _hash_entity(entity_id: str) -> str:
         return hashlib.sha256(entity_id.encode()).hexdigest()[:16]
 
-    def generate_record(self, region: str, country: str, seed: int = 0) -> Dict[str, Any]:
+    def generate_record(self, region: str, country: str, seed: int = 0) -> dict[str, Any]:
         entity_id = str(uuid.uuid4())
         profile_id = self._hash_entity(entity_id)
         timestamp = datetime.now(timezone.utc).isoformat()
