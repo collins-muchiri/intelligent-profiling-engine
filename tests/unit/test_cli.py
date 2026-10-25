@@ -6,12 +6,12 @@ documented in the audit (and the README) when running
 """
 from __future__ import annotations
 
-import io
 import contextlib
+import io
 
 import pytest
 
-from profile_system.cli import ProfileSystemCLI, Profiler
+from profile_system.cli import Profiler, ProfileSystemCLI
 
 
 @pytest.fixture

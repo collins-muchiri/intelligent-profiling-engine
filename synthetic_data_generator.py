@@ -18,18 +18,22 @@ Privacy Guarantee: This dataset is fully synthetic and GDPR-style anonymized by 
 No real personal data is used or generated.
 """
 
-import uuid
-import random
 import hashlib
-from datetime import datetime, timedelta
 import json
-from typing import Dict, List, Iterator
+import random
+import uuid
+from collections.abc import Iterator
+from datetime import datetime, timedelta
 
 # For Spark compatibility, assume PySpark is available
 try:
-    from pyspark.sql import SparkSession, DataFrame
+    from pyspark.sql import DataFrame, SparkSession
     from pyspark.sql.types import (
-        StructType, StructField, StringType, DoubleType, BooleanType,
+        BooleanType,
+        DoubleType,
+        StringType,
+        StructField,
+        StructType,
     )
     SPARK_AVAILABLE = True
 except ImportError:
@@ -65,7 +69,7 @@ class SyntheticDataGenerator:
     def generate_profile_id(self, entity_id: str) -> str:
         return hashlib.sha256(entity_id.encode()).hexdigest()[:16]
 
-    def get_region_data(self, region_code: str) -> Dict:
+    def get_region_data(self, region_code: str) -> dict:
         return self.regions.get(region_code, self.regions["NA"])
 
     def generate_nlp_text(self, domain: str, event_type: str) -> str:
@@ -116,7 +120,7 @@ class SyntheticDataGenerator:
                 speed=random.randint(20, 100)
             )
 
-    def generate_record(self, domain: str, region: str, entity_id: str = None) -> Dict:
+    def generate_record(self, domain: str, region: str, entity_id: str = None) -> dict:
         if not entity_id:
             entity_id = self.generate_entity_id()
         profile_id = self.generate_profile_id(entity_id)
@@ -184,16 +188,16 @@ class SyntheticDataGenerator:
             "review_notes_placeholder": review_notes_placeholder
         }
 
-    def generate_batch(self, domain: str, region: str, size: int) -> List[Dict]:
+    def generate_batch(self, domain: str, region: str, size: int) -> list[dict]:
         """Generate a batch of records for local processing."""
         return [self.generate_record(domain, region) for _ in range(size)]
 
-    def generate_streaming_batch(self, domain: str, region: str, size: int) -> Iterator[Dict]:
+    def generate_streaming_batch(self, domain: str, region: str, size: int) -> Iterator[dict]:
         """Generator for streaming/micro-batch simulation."""
         for _ in range(size):
             yield self.generate_record(domain, region)
 
-    def to_spark_df(self, records: List[Dict]) -> DataFrame:
+    def to_spark_df(self, records: list[dict]) -> DataFrame:
         if not SPARK_AVAILABLE:
             raise ImportError("PySpark required for DataFrame conversion")
         schema = StructType([
@@ -217,7 +221,7 @@ class SyntheticDataGenerator:
         df.write.mode("overwrite").parquet(path)
         print(f"Saved to Parquet: {path}")
 
-    def save_to_jsonl(self, records: List[Dict], path: str):
+    def save_to_jsonl(self, records: list[dict], path: str):
         with open(path, 'w') as f:
             for record in records:
                 f.write(json.dumps(record) + '\n')

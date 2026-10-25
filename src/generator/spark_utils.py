@@ -1,7 +1,7 @@
 try:
     from pyspark.sql import SparkSession
 except Exception:
-    SparkSession = None  # type: ignore
+    SparkSession = None
 
 
 def get_spark(app_name: str = "SyntheticDataGen"):

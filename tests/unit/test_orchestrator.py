@@ -10,7 +10,6 @@ import pytest
 from generator.config import ConfigLoader
 from generator.orchestrator import SyntheticDataOrchestrator
 
-
 CONFIG_PATH = "config/global_synthetic_config.yaml"
 
 

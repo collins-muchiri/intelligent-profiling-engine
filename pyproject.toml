@@ -7,7 +7,7 @@ name = "profile_system"
 version = "0.2.0"
 description = "Intelligent Profiling Engine: unsupervised ML + NLP + HITL feedback."
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 license = { text = "MIT" }
 authors = [{ name = "Bucky Ops" }]
 keywords = ["profiling", "ml", "nlp", "anomaly-detection", "hitl"]
@@ -16,8 +16,7 @@ classifiers = [
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
@@ -29,7 +28,7 @@ dependencies = [
     "matplotlib>=3.7,<4",
     "spacy>=3.7,<4",
     "textblob>=0.17,<1",
-    "sentence-transformers>=2.2,<4",
+    "sentence-transformers>=5.6,<6",  # PYSEC-2026-4164 fixed in 5.6.0
     "PyYAML>=6.0,<7",
     "Faker>=20.0,<30",
     "streamlit>=1.30,<2",
@@ -56,9 +55,9 @@ dev = [
 docs = ["mkdocs>=1.5", "mkdocs-material>=9.5", "mkdocstrings[python]>=0.24"]
 
 [project.urls]
-Homepage = "https://github.com/bucky-ops/intelligent-profiling-engine"
-Repository = "https://github.com/bucky-ops/intelligent-profiling-engine"
-Issues = "https://github.com/bucky-ops/intelligent-profiling-engine/issues"
+Homepage = "https://github.com/collins-muchiri/intelligent-profiling-engine"
+Repository = "https://github.com/collins-muchiri/intelligent-profiling-engine"
+Issues = "https://github.com/collins-muchiri/intelligent-profiling-engine/issues"
 
 [project.scripts]
 profile-system = "profile_system.cli:ProfileSystemCLI.run"
@@ -71,12 +70,12 @@ where = ["src"]
 
 [tool.pytest.ini_options]
 minversion = "7.0"
-addopts = "-ra -q --cov=src/profile_system --cov-report=term-missing"
+addopts = "-ra -q --cov=src --cov-report=term-missing"
 testpaths = ["tests"]
 
 [tool.ruff]
 line-length = 100
-target-version = "py39"
+target-version = "py310"
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "B", "UP", "N", "C4", "SIM"]
@@ -84,15 +83,26 @@ ignore = ["E501"]  # line length handled by black
 
 [tool.black]
 line-length = 100
-target-version = ["py39", "py310", "py311", "py312"]
+target-version = ["py310", "py311", "py312"]
 
 [tool.mypy]
-python_version = "3.9"
+python_version = "3.10"
 strict = false
 ignore_missing_imports = true
 warn_unused_ignores = true
 warn_redundant_casts = true
 
+# Third-party trees (torch/transformers/...) are enormous and untyped-stubbed;
+# mypy OOM-killed parsing them (2GB sandbox, CI-class constraint). Skipping
+# THEIR analysis keeps full strictness on first-party src/ code.
+[[tool.mypy.overrides]]
+module = [
+    "torch.*", "transformers.*", "sentence_transformers.*", "spacy.*",
+    "streamlit.*", "sklearn.*", "textblob.*", "faker.*", "numpy.*",
+    "pandas.*", "matplotlib.*", "yaml.*", "scipy.*", "plotly.*",
+]
+follow_imports = "skip"
+
 [tool.coverage.run]
-source = ["src/profile_system"]
+source = ["src"]  # generator included: measuring a subset inflated the number
 omit = ["*/tests/*"]

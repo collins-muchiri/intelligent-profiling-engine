@@ -17,16 +17,15 @@ from __future__ import annotations
 import contextlib
 import io
 import os
-import sys
 import tempfile
 from datetime import datetime
 
 import streamlit as st
 
-# Ensure src is importable.
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "src"))
-
-from profile_system.cli import ProfileSystemCLI, Profiler  # noqa: E402
+# profile_system comes from the installed package (pip install -e . /
+# make install). The former sys.path hack + E402 noqa is gone: run this app
+# from an environment where the package is installed (see README).
+from profile_system.cli import Profiler, ProfileSystemCLI
 
 # ─── Page config ────────────────────────────────────────────────────────────
 st.set_page_config(
@@ -348,23 +347,26 @@ elif st.session_state.page == "💻 Terminal":
             label_visibility="collapsed",
         )
     with col_run:
-        if st.button("▶ Run", use_container_width=True):
-            if user_input:
-                execute_command(user_input)
-                st.rerun()
+        if st.button("▶ Run", use_container_width=True) and user_input:
+            execute_command(user_input)
+            st.rerun()
 
     # Quick command buttons
     st.divider()
     st.markdown("#### ⚡ Quick Commands")
     qc1, qc2, qc3, qc4, qc5 = st.columns(5)
     if qc1.button("📊 Stats", use_container_width=True):
-        execute_command("stats"); st.rerun()
+        execute_command("stats")
+        st.rerun()
     if qc2.button("📋 List", use_container_width=True):
-        execute_command("list"); st.rerun()
+        execute_command("list")
+        st.rerun()
     if qc3.button("🧮 Cluster", use_container_width=True):
-        execute_command("cluster --n 3"); st.rerun()
+        execute_command("cluster --n 3")
+        st.rerun()
     if qc4.button("⚠ Analyze", use_container_width=True):
-        execute_command("analyze anomalies"); st.rerun()
+        execute_command("analyze anomalies")
+        st.rerun()
     if qc5.button("🗑 Clear History", use_container_width=True):
         st.session_state.history = []
         st.rerun()
@@ -379,23 +381,22 @@ elif st.session_state.page == "👥 Profiles":
     df = profiler.tracker.get_profiles_df()
 
     # Add profile form
-    with st.expander("➕ Add / Update Profile", expanded=df.empty):
-        with st.form("add_profile_form"):
-            c1, c2, c3 = st.columns(3)
-            eid = c1.text_input("Entity ID", placeholder="CUST-001")
-            amount = c2.number_input("Amount", value=100.0, step=10.0)
-            frequency = c3.number_input("Frequency", value=1, step=1)
-            text = st.text_input("Text (optional, for NLP)",
-                                 placeholder="Large transaction reported")
-            submitted = st.form_submit_button("Add Profile")
-            if submitted and eid:
-                data = {"behavioral": {"amount": float(amount),
-                                       "frequency": float(frequency)}}
-                if text:
-                    data["text"] = {"sentiment": profiler.nlp.sentiment_analysis(text)}
-                profiler.update_profile(eid, data)
-                st.success(f"✔ Profile updated for {eid}")
-                st.rerun()
+    with st.expander("➕ Add / Update Profile", expanded=df.empty), st.form("add_profile_form"):
+        c1, c2, c3 = st.columns(3)
+        eid = c1.text_input("Entity ID", placeholder="CUST-001")
+        amount = c2.number_input("Amount", value=100.0, step=10.0)
+        frequency = c3.number_input("Frequency", value=1, step=1)
+        text = st.text_input("Text (optional, for NLP)",
+                             placeholder="Large transaction reported")
+        submitted = st.form_submit_button("Add Profile")
+        if submitted and eid:
+            data = {"behavioral": {"amount": float(amount),
+                                   "frequency": float(frequency)}}
+            if text:
+                data["text"] = {"sentiment": profiler.nlp.sentiment_analysis(text)}
+            profiler.update_profile(eid, data)
+            st.success(f"✔ Profile updated for {eid}")
+            st.rerun()
 
     st.divider()
 
@@ -543,11 +544,10 @@ elif st.session_state.page == "✅ HITL":
         c1, c2 = st.columns([1, 3])
         entity_id = c1.text_input("Entity ID", placeholder="CUST-001")
         notes = c2.text_input("Notes", placeholder="e.g., confirmed legitimate")
-        if st.form_submit_button("➕ Add Validation"):
-            if entity_id:
-                profiler.add_validation(entity_id, notes)
-                st.success(f"✔ Validation added for {entity_id}")
-                st.rerun()
+        if st.form_submit_button("➕ Add Validation") and entity_id:
+            profiler.add_validation(entity_id, notes)
+            st.success(f"✔ Validation added for {entity_id}")
+            st.rerun()
 
     st.divider()
 
@@ -592,9 +592,9 @@ elif st.session_state.page == "📁 Data":
         if uploaded is not None:
             # Save to temp file then import
             suffix = os.path.splitext(uploaded.name)[1]
-            tmp = tempfile.NamedTemporaryFile(delete=False, suffix=suffix)
-            tmp.write(uploaded.getvalue())
-            tmp.close()
+            # delete=False: the path must outlive the handle for import_profiles
+            with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
+                tmp.write(uploaded.getvalue())
             try:
                 count = profiler.import_profiles(tmp.name)
                 st.success(f"✔ Imported {count} profiles from {uploaded.name}")
@@ -617,8 +617,9 @@ elif st.session_state.page == "📁 Data":
             fmt = st.selectbox("Format", ["JSON", "CSV"])
             if st.button("⬇ Export"):
                 suffix = ".json" if fmt == "JSON" else ".csv"
-                tmp = tempfile.NamedTemporaryFile(delete=False, suffix=suffix)
-                tmp.close()
+                # delete=False: export_profiles writes to the path after close
+                with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
+                    pass
                 try:
                     count = profiler.export_profiles(tmp.name)
                     with open(tmp.name, "rb") as f:

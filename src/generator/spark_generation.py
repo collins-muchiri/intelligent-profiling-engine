@@ -1,16 +1,16 @@
 """Spark-backed Parquet writer for synthetic data."""
 import json
-from typing import List, Dict, Any, Optional
+from typing import Any
 
 try:
     from pyspark.sql import SparkSession
     SPARK_AVAILABLE = True
 except Exception:
     SPARK_AVAILABLE = False
-    SparkSession = None  # type: ignore
+    SparkSession = None
 
 
-def to_parquet_from_records(records: List[Dict[str, Any]], path: str, partitions: Optional[List[str]] = None) -> str:
+def to_parquet_from_records(records: list[dict[str, Any]], path: str, partitions: list[str] | None = None) -> str:
     """Write records to Parquet using Spark when available, else fall back to JSONL."""
     if SPARK_AVAILABLE:
         spark = SparkSession.builder.appName("SyntheticDataParquetGen").getOrCreate()

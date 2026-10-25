@@ -2,9 +2,9 @@
 
 [![CI](https://github.com/collins-muchiri/intelligent-profiling-engine/actions/workflows/ci.yml/badge.svg)](https://github.com/collins-muchiri/intelligent-profiling-engine/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![Streamlit](https://img.shields.io/badge/Interface-Streamlit-FF4B4B.svg)](https://streamlit.io/)
-[![codecov](https://img.shields.io/badge/coverage-37%20tests-brightgreen)](https://github.com/collins-muchiri/intelligent-profiling-engine/actions)
+[![coverage](https://img.shields.io/badge/coverage-67%25%20of%20src%20(measured%202026--10--25)-brightgreen)](https://github.com/collins-muchiri/intelligent-profiling-engine/actions)
 
 A state-of-the-art **Intelligent Profiling Engine** that combines Unsupervised
 Machine Learning, Natural Language Processing (NLP), and Human-in-the-Loop
