@@ -4,7 +4,6 @@ from __future__ import annotations
 from generator.orchestrator import SyntheticDataOrchestrator
 from profile_system.cli import Profiler
 
-
 CONFIG_PATH = "config/global_synthetic_config.yaml"
 
 

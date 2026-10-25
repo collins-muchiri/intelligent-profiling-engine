@@ -14,7 +14,7 @@ dev:  ## Install dev + test deps and pre-commit hooks
 	pre-commit install
 
 lint:  ## Run ruff
-	ruff check src tests
+	ruff check .
 
 type:  ## Run mypy
 	mypy src
@@ -23,7 +23,7 @@ test:  ## Run pytest
 	pytest tests
 
 test-cov:  ## Run pytest with coverage
-	pytest tests --cov=src/profile_system --cov-report=term-missing --cov-report=html
+	pytest tests --cov=src --cov-report=term-missing --cov-report=html --cov-fail-under=60
 
 security:  ## Run pip-audit + bandit
 	pip-audit -r requirements.txt --strict

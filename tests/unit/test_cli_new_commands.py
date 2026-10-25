@@ -3,13 +3,13 @@ stats, list, import, export, reset, nlp.
 """
 from __future__ import annotations
 
-import io
 import contextlib
+import io
 import json
 
 import pytest
 
-from profile_system.cli import ProfileSystemCLI, Profiler
+from profile_system.cli import Profiler, ProfileSystemCLI
 
 
 @pytest.fixture

@@ -1,11 +1,13 @@
 import sys
+
 sys.path.append('src')
 
-from profile_system.profile import EntityTracker
-from profile_system.unsupervised import Clustering, AnomalyDetection
-from profile_system.nlp import NLPProcessor
-from profile_system.hitl import HITLFeedback
 import pandas as pd
+
+from profile_system.hitl import HITLFeedback
+from profile_system.nlp import NLPProcessor
+from profile_system.profile import EntityTracker
+from profile_system.unsupervised import AnomalyDetection, Clustering
 
 # Dummy finance data
 data = pd.DataFrame({
