@@ -182,3 +182,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 ---
 
 **Nexus Profile System** - *Bridging the gap between raw data and actionable intelligence.*
+
+## Contribution and license
+
+Issues and pull requests are welcome — please open an issue describing the proposed change before submitting substantive work. This project is released under the MIT License.
