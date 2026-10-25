@@ -28,3 +28,4 @@ data/
 models/
 profiles.json
 *.log
+.coverage
