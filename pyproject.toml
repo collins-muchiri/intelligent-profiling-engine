@@ -30,7 +30,7 @@ dependencies = [
     "textblob>=0.17,<1",
     "sentence-transformers>=5.6,<6",  # PYSEC-2026-4164 fixed in 5.6.0
     "PyYAML>=6.0,<7",
-    "Faker>=20.0,<30",
+    "Faker>=20.0,<41",
     "streamlit>=1.30,<2",
 ]
 
