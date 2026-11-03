@@ -1,4 +1,4 @@
-> **STATUS (2026-10-25): plan only - no evaluation has been executed and no results exist.**
+> **STATUS (2026-10-25): plan only: no evaluation has been executed and no results exist.**
 > Results, when produced, must be committed with their evidence per the reporting rules.
 
 # Evaluation plan: measuring whether the profiles are any good

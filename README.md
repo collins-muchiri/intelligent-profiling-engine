@@ -10,7 +10,7 @@ A state-of-the-art **Intelligent Profiling Engine** that combines Unsupervised
 Machine Learning, Natural Language Processing (NLP), and Human-in-the-Loop
 (HITL) feedback to track, analyze, and evolve entity profiles in real-time.
 
-> **v0.2.0** — Audit remediation release. See the
+> **v0.2.0**: Audit remediation release. See the
 > [audit report](AUDIT_REPORT.md) and the [changelog](CHANGELOG.md) for the
 > full list of fixes, or [ARCHITECTURE.md](ARCHITECTURE.md) for the design.
 
@@ -19,7 +19,7 @@ Machine Learning, Natural Language Processing (NLP), and Human-in-the-Loop
 ## 🌟 Key Features
 
 - **🧠 Hybrid Intelligence**: K-Means clustering + Isolation Forest anomaly detection with debounced JSON persistence.
-- **💬 NLP-Driven Insights**: spaCy NER + TextBlob sentiment + SentenceTransformer embeddings — loaded lazily with caching.
+- **💬 NLP-Driven Insights**: spaCy NER + TextBlob sentiment + SentenceTransformer embeddings: loaded lazily with caching.
 - **👥 Human-in-the-Loop (HITL)**: validations + overrides stored alongside profiles.
 - **🖥️ Triple-Mode Interface**: CLI (`run.py`), Tkinter desktop (`gui_app.py`), Streamlit web (`app.py`).
 - **📈 Temporal Evolution**: behavioral signals timestamped with timezone-aware datetimes.
@@ -181,8 +181,8 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ---
 
-**Nexus Profile System** - *Bridging the gap between raw data and actionable intelligence.*
+**Nexus Profile System**: *Bridging the gap between raw data and actionable intelligence.*
 
 ## Contribution and license
 
-Issues and pull requests are welcome — please open an issue describing the proposed change before submitting substantive work. This project is released under the MIT License.
+Issues and pull requests are welcome: please open an issue describing the proposed change before submitting substantive work. This project is released under the MIT License.

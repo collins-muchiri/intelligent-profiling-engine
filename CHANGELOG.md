@@ -4,7 +4,7 @@ All notable changes to this project are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this
 project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.2.0] - 2025 - Audit remediation release
+## [0.2.0] (2025): Audit remediation release
 
 This release implements the recommendations of the v0.1 audit. The project
 is now runnable end-to-end and ships with tests, CI and Docker.
@@ -18,7 +18,7 @@ is now runnable end-to-end and ships with tests, CI and Docker.
 - `src/profile_system/cli.py`: `visualize <id> --map` no longer treats
   `--map` as the entity id. Argument order is now flexible.
 - `src/profile_system/logging_viz.py`: `Visualizer.plot_profile_timeline`
-  no longer raises `KeyError` - it accepts the `Profile` object directly
+  no longer raises `KeyError`; it accepts the `Profile` object directly
   instead of looking up a non-existent DataFrame column.
 - `config/global_synthetic_config.yaml`: `finance`/`ngo`/`telecom`/`traffic`
   are no longer wrongly nested under `regions:`.
@@ -32,14 +32,14 @@ is now runnable end-to-end and ships with tests, CI and Docker.
 ### Added
 - `pyproject.toml` replaces `setup.py`. Pinning happens in one place.
 - `requirements-dev.txt` for test / lint tooling.
-- `Profiler` service in `src/profile_system/cli.py` - shared business
+- `Profiler` service in `src/profile_system/cli.py`: shared business
   logic for CLI / GUI / web (DRY).
 - Batched (write-behind) persistence in `EntityTracker`.
 - Lazy NLP model loading + embedding cache in `NLPProcessor`.
 - Public API exports in `src/profile_system/__init__.py`.
 - `tests/` directory with 37 unit + integration tests.
 - `.github/workflows/ci.yml`: lint + type-check + test matrix on Python
-  3.9 - 3.12, plus a dedicated security job (`pip-audit`, `bandit`).
+  3.9-3.12, plus a dedicated security job (`pip-audit`, `bandit`).
 - `.github/dependabot.yml`: weekly pip + GitHub-Actions updates.
 - `.pre-commit-config.yaml`: ruff + format + hygiene hooks.
 - `CONTRIBUTING.md`, `SECURITY.md`, `ARCHITECTURE.md`, `CODE_OF_CONDUCT.md`.
@@ -51,7 +51,7 @@ is now runnable end-to-end and ships with tests, CI and Docker.
 - `README.md`: fixed `git origin push` typo, added prerequisites,
   troubleshooting and contributor links.
 
-## [0.1.0] - Initial public release
+## [0.1.0]: Initial public release
 
 - CLI, Tkinter GUI and Streamlit web app.
 - K-Means clustering, Isolation Forest anomaly detection, spaCy NLP,

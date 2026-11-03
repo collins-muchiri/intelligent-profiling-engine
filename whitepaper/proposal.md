@@ -1,4 +1,4 @@
-# Global Synthetic Data Generator — White Paper Proposal
+# Global Synthetic Data Generator: White Paper Proposal
 
 Abstract
 - A scalable, privacy-preserving synthetic data platform for finance, NGO, telecom, and traffic domains.

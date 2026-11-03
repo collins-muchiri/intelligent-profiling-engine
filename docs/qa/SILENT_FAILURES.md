@@ -1,8 +1,8 @@
-# SILENT_FAILURES.md - dispositions (2026-10-25)
+# SILENT_FAILURES.md: dispositions (2026-10-25)
 
 | # | Class | Disposition |
 |---|---|---|
-| 1 | CI `|| true` on THREE gates (spacy model download, mypy, bandit) | REMOVED - all three now blocking. The mypy gate additionally could not run at all (python_version=3.9 rejected; OOM on third-party trees) - see D-P2. bandit had a real B311 finding masked by `|| true`. |
+| 1 | CI `|| true` on THREE gates (spacy model download, mypy, bandit) | REMOVED: all three now blocking. The mypy gate additionally could not run at all (python_version=3.9 rejected; OOM on third-party trees): see D-P2. bandit had a real B311 finding masked by `|| true`. |
 | 2 | B311 `random.seed()/randint()` in generator orchestrator | FIXED at the source: instance-level `np.random.default_rng(seed)` (also stops mutating global RNG state). bandit now 0 findings and blocking. |
 | 3 | Stub-class import fallbacks (terminal_ui, streaming) | FIXED: direct imports; failures surface at the import (D-P6). |
 | 4 | gui_app close handler swallowed join/save errors (`except: pass` x2) | Converted to explicit `contextlib.suppress(RuntimeError)` for the thread join and a stderr-visible failure for profile save (ruff SIM105 autofix + review); teardown no longer fails invisibly. |

@@ -17,7 +17,7 @@ Last updated: 2026-10-24 (UTC) by Phase 0 audit session.
 | `ruff check src tests` | FAIL: 157 errors |
 | `mypy src` | BROKEN: pyproject python_version=3.9 rejected by mypy>=1.8 |
 | `bandit -r src -q` | 1 Low (B311, synthetic-data seed) |
-| `python run.py -c "stats"` | PASS (writes profiles.json into cwd - removed after run) |
+| `python run.py -c "stats"` | PASS (writes profiles.json into cwd: removed after run) |
 | `streamlit run app.py --server.headless true` + GET /healthz,/ | 200/200 |
 | GitHub Actions main (run 40114937243) | RED: py3.9 install fails, pip-audit fails, ruff fails |
 
@@ -25,8 +25,8 @@ Last updated: 2026-10-24 (UTC) by Phase 0 audit session.
 
 1. CI red on main (three independent causes above).
 2. mypy gate vacuous (misconfigured python_version).
-3. Coverage blind spot: src/generator (~1,900 LOC) unmeasured - rule 0.3 issue.
-4. README coverage badge claims 37%; measured reality is 75% of profile_system - badge matches nothing.
+3. Coverage blind spot: src/generator (~1,900 LOC) unmeasured: rule 0.3 issue.
+4. README coverage badge claims 37%; measured reality is 75% of profile_system: badge matches nothing.
 5. PermittedUsePolicy / natural-person schema block: documented in docs/DPIA.md, absent from code.
 6. EVAL_PLAN.md has no committed results; convergence-curve headline claim unproven.
 
