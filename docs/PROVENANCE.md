@@ -17,11 +17,11 @@ Disclosure: part of the history was produced by AI-assisted tooling under the ow
 
 ## Licence
 
-- LICENSE present (see file header; MIT-style). Compatible with planned data sources: OpenSanctions sample sets (OpenSanctions Licence NC - noncommercial; flagged for P2 DATA.md review before bundling), GLEIF LEI (CC0), Companies House-style open data, Faker-generated synthetic data (MIT). A licences policy gate is scheduled for P1 CI.
+- LICENSE present (see file header; MIT-style). Compatible with planned data sources: OpenSanctions sample sets (OpenSanctions Licence NC: noncommercial; flagged for P2 DATA.md review before bundling), GLEIF LEI (CC0), Companies House-style open data, Faker-generated synthetic data (MIT). A licences policy gate is scheduled for P1 CI.
 
 ## Third-party code
 
-- No vendored upstream trees. Declared deps: scikit-learn, pandas, numpy, matplotlib, spacy (+en_core_web_sm model downloaded at install), textblob, sentence-transformers, PyYAML, Faker, streamlit; dev: pytest/cov/benchmark, ruff, black, mypy, pip-audit, bandit, pre-commit. `requirements.txt` header documents that an earlier revision contained fictional future pins (torch 2.10.0 etc.) and was regenerated from a real audit - disclosed here as part of the repo's honesty record.
+- No vendored upstream trees. Declared deps: scikit-learn, pandas, numpy, matplotlib, spacy (+en_core_web_sm model downloaded at install), textblob, sentence-transformers, PyYAML, Faker, streamlit; dev: pytest/cov/benchmark, ruff, black, mypy, pip-audit, bandit, pre-commit. `requirements.txt` header documents that an earlier revision contained fictional future pins (torch 2.10.0 etc.) and was regenerated from a real audit: disclosed here as part of the repo's honesty record.
 
 ## Data
 

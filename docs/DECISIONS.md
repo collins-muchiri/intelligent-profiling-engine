@@ -24,7 +24,7 @@ files`, blocking in CI, no `|| true` anywhere.
 
 The old gate measured only src/profile_system (75%) while src/generator
 (~1,900 LOC) went unmeasured, and the README badge claimed "37%". Measuring
-the whole src tree gives 66.67% against the pre-existing floor of 60 - the
+the whole src tree gives 66.67% against the pre-existing floor of 60: the
 floor was NOT lowered (it is unchanged at 60); the measurement scope was
 WIDENED and still passes. Badge updated to the measured number with date.
 
@@ -84,6 +84,6 @@ Stop-and-log register (mission rule 0.11).
 
 ## D-005 Audit PR not merged while CI is red
 
-- Assumption: rule 0.8 - merge only on green.
+- Assumption: rule 0.8: merge only on green.
 - Rationale: audit PR is docs/evidence-only and cannot turn the pre-existing red build green; P1 fixes CI, then the audit PR merges (or P1 supersedes it).
 - Reversibility: full.
